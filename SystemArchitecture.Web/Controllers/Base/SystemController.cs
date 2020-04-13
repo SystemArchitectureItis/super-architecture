@@ -16,6 +16,7 @@ namespace SystemArchitecture.Web.Controllers
 			_logger = logger;
 		}
 
+		[HttpGet]
 		public IActionResult Ping()
 		{
 			return Ok("Online");

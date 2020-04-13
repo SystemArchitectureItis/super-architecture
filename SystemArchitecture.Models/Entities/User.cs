@@ -1,11 +1,14 @@
-﻿using SystemArchitecture.Models.Entities.Base;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
+using SystemArchitecture.Models.Entities.Base;
 
 namespace SystemArchitecture.Models.Entities
 {
 	public class User : BaseEntity
 	{
-		public string Prop1 { get; set; }
-		public string Prop2 { get; set; }
-		public string Prop { get; set; }
+		public string Name { get; set; }
+		[Phone] public string PhoneNumber { get; set; }
+		[CreditCard] public string CardNumber { get; set; }
+		public Uri ImageUrl { get; set; }
 	}
 }

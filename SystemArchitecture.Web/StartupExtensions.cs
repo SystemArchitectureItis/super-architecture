@@ -8,7 +8,7 @@ namespace SystemArchitecture.Web
 	{
 		public static void RegisterServices(this IServiceCollection services)
 		{
-			services.AddSingleton(typeof(DomainService<>));
+			services.AddScoped(typeof(DomainService<>));
 		}
 
 		public static void RegisterContext(this IServiceCollection services)

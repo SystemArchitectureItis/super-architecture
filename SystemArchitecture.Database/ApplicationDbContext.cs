@@ -14,6 +14,11 @@ namespace SystemArchitecture.Database
 		{
 		}
 
+		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+		{
+			optionsBuilder.UseNpgsql(ConnectionStrings.Current);
+		}
+
 		public DbSet<Party> Parties { get; set; }
 		public DbSet<Debt> Debts { get; set; }
 		public DbSet<Purchase> Purchases { get; set; }

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using SystemArchitecture.Database;
 using SystemArchitecture.Models.Entities.Base;
 
@@ -15,32 +16,38 @@ namespace SystemArchitecture.Core
 
 		public async Task DeleteAsync(long id)
 		{
-			await Task.CompletedTask;
-			throw new System.NotImplementedException();
+			var entity = await _context.Set<T>().FindAsync(id);
+			if (entity != null)
+				_context.Set<T>().Remove(entity);
+			await Save();
 		}
 
 		public async Task<T> GetAsync(long entityId)
 		{
-			await Task.CompletedTask;
-			throw new System.NotImplementedException();
+			return await _context.Set<T>().FindAsync(entityId);
 		}
 
-		public async Task<T> GetAllAsync()
+		public async Task<IEnumerable<T>> GetAllAsync()
 		{
 			await Task.CompletedTask;
-			throw new System.NotImplementedException();
+			return _context.Set<T>().AsQueryable();
 		}
 
 		public async Task SaveAsync(T entity)
 		{
-			await Task.CompletedTask;
-			throw new System.NotImplementedException();
+			await _context.Set<T>().AddAsync(entity);
+			await Save();
 		}
 
 		public async Task UpdateAsync(T entity)
 		{
-			await Task.CompletedTask;
-			throw new System.NotImplementedException();
+			_context.Set<T>().Update(entity);
+			await Save();
+		}
+
+		private async Task Save()
+		{
+			await _context.SaveChangesAsync();
 		}
 	}
 }

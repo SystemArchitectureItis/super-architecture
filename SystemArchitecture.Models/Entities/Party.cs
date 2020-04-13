@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel.DataAnnotations.Schema;
 using SystemArchitecture.Models.Entities.Base;
 
 namespace SystemArchitecture.Models.Entities
@@ -13,8 +14,9 @@ namespace SystemArchitecture.Models.Entities
 		public string Password { get; set; }
 		public Uri ImageUrl { get; set; }
 
-		// todo ?
+		[NotMapped]
 		public User[] Users { get; set; }
+		[NotMapped]
 		public Purchase[] PurchaseList { get; set; }
 	}
 }
