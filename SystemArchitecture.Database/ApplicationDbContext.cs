@@ -1,5 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
-using SystemArchitecture.Models;
+using Microsoft.EntityFrameworkCore;
+using SystemArchitecture.Models.Entities.Connectors;
 using SystemArchitecture.Models.Entities;
 
 namespace SystemArchitecture.Database
@@ -19,10 +19,14 @@ namespace SystemArchitecture.Database
 			optionsBuilder.UseNpgsql(ConnectionStrings.Current);
 		}
 
+		// entities
 		public DbSet<Party> Parties { get; set; }
 		public DbSet<Debt> Debts { get; set; }
 		public DbSet<Purchase> Purchases { get; set; }
 		public DbSet<User> Users { get; set; }
+		
+		// connectors
 		public DbSet<UserDebtor> UserDebtors { get; set; }
+		public DbSet<PartyUser> PartyUsers { get; set; }
 	}
 }

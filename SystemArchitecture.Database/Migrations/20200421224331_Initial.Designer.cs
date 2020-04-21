@@ -10,7 +10,7 @@ using SystemArchitecture.Database;
 namespace SystemArchitecture.Database.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200413153344_Initial")]
+    [Migration("20200421224331_Initial")]
     partial class Initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -20,6 +20,28 @@ namespace SystemArchitecture.Database.Migrations
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn)
                 .HasAnnotation("ProductVersion", "3.1.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
+
+            modelBuilder.Entity("SystemArchitecture.Models.Entities.Connectors.PartyUser", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<long?>("PartyId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("UserId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("PartyId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("PartyUsers");
+                });
 
             modelBuilder.Entity("SystemArchitecture.Models.Entities.Debt", b =>
                 {
@@ -62,7 +84,10 @@ namespace SystemArchitecture.Database.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<DateTime>("Date")
+                    b.Property<DateTime>("DateEnd")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<DateTime>("DateStart")
                         .HasColumnType("timestamp without time zone");
 
                     b.Property<string>("Description")
@@ -98,11 +123,11 @@ namespace SystemArchitecture.Database.Migrations
                     b.Property<string>("CheckUrl")
                         .HasColumnType("text");
 
-                    b.Property<long?>("CreditorId")
-                        .HasColumnType("bigint");
-
                     b.Property<string>("ImageUrl")
                         .HasColumnType("text");
+
+                    b.Property<long?>("PartyId")
+                        .HasColumnType("bigint");
 
                     b.Property<decimal>("Price")
                         .HasColumnType("numeric");
@@ -112,7 +137,7 @@ namespace SystemArchitecture.Database.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("CreditorId");
+                    b.HasIndex("PartyId");
 
                     b.ToTable("Purchases");
                 });
@@ -133,10 +158,29 @@ namespace SystemArchitecture.Database.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
+                    b.Property<long?>("PartyId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Password")
+                        .HasColumnType("text");
+
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("text");
 
+                    b.Property<long?>("PurchaseId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long?>("PurchaseId1")
+                        .HasColumnType("bigint");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("PartyId");
+
+                    b.HasIndex("PurchaseId");
+
+                    b.HasIndex("PurchaseId1")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });
@@ -171,6 +215,17 @@ namespace SystemArchitecture.Database.Migrations
                     b.ToTable("UserDebtors");
                 });
 
+            modelBuilder.Entity("SystemArchitecture.Models.Entities.Connectors.PartyUser", b =>
+                {
+                    b.HasOne("SystemArchitecture.Models.Entities.Party", "Party")
+                        .WithMany()
+                        .HasForeignKey("PartyId");
+
+                    b.HasOne("SystemArchitecture.Models.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId");
+                });
+
             modelBuilder.Entity("SystemArchitecture.Models.Entities.Debt", b =>
                 {
                     b.HasOne("SystemArchitecture.Models.Entities.User", "Creditor")
@@ -184,9 +239,24 @@ namespace SystemArchitecture.Database.Migrations
 
             modelBuilder.Entity("SystemArchitecture.Models.Entities.Purchase", b =>
                 {
-                    b.HasOne("SystemArchitecture.Models.Entities.User", "Creditor")
-                        .WithMany()
-                        .HasForeignKey("CreditorId");
+                    b.HasOne("SystemArchitecture.Models.Entities.Party", null)
+                        .WithMany("PurchaseList")
+                        .HasForeignKey("PartyId");
+                });
+
+            modelBuilder.Entity("SystemArchitecture.Models.Entities.User", b =>
+                {
+                    b.HasOne("SystemArchitecture.Models.Entities.Party", null)
+                        .WithMany("Users")
+                        .HasForeignKey("PartyId");
+
+                    b.HasOne("SystemArchitecture.Models.Entities.Purchase", null)
+                        .WithMany("UserList")
+                        .HasForeignKey("PurchaseId");
+
+                    b.HasOne("SystemArchitecture.Models.Entities.Purchase", null)
+                        .WithOne("Creditor")
+                        .HasForeignKey("SystemArchitecture.Models.Entities.User", "PurchaseId1");
                 });
 #pragma warning restore 612, 618
         }

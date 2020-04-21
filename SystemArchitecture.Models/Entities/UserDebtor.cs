@@ -4,7 +4,7 @@ using SystemArchitecture.Models.Entities.Base;
 
 namespace SystemArchitecture.Models.Entities
 {
-	public class UserDebtor : BaseEntity
+	public class UserDebtor : HaveId
 	{
 		public string Name { get; set; }
 		[Phone] public string PhoneNumber { get; set; }

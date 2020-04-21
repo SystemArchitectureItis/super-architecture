@@ -5,7 +5,7 @@ using SystemArchitecture.Models.Entities.Base;
 
 namespace SystemArchitecture.Core
 {
-	public class DomainService<T> where T : BaseEntity
+	public class DomainService<T> where T : HaveId
 	{
 		private readonly ApplicationDbContext _context;
 

@@ -22,6 +22,7 @@ namespace SystemArchitecture.Web.Controllers
 			return Ok("Online");
 		}
 
+		[ApiExplorerSettings(IgnoreApi = true)]
 		[AcceptVerbs("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS", "PATCH")]
 		public IActionResult Error()
 		{
