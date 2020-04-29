@@ -4,20 +4,35 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 namespace SystemArchitecture.Database.Migrations
 {
-    public partial class Initial : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "Locations",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    OpenHour = table.Column<DateTime>(nullable: false),
+                    CloseHour = table.Column<DateTime>(nullable: false),
+                    Address = table.Column<string>(nullable: true),
+                    Phone = table.Column<string>(nullable: true),
+                    Link = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Locations", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "Parties",
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Ref = table.Column<string>(nullable: true),
                     Title = table.Column<string>(nullable: true),
                     Description = table.Column<string>(nullable: true),
-                    Location = table.Column<string>(nullable: true),
                     DateStart = table.Column<DateTime>(nullable: false),
                     DateEnd = table.Column<DateTime>(nullable: false),
                     Password = table.Column<string>(nullable: true),
@@ -29,21 +44,47 @@ namespace SystemArchitecture.Database.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserDebtors",
+                name: "Users",
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(nullable: true),
+                    FirstName = table.Column<string>(nullable: true),
+                    LastName = table.Column<string>(nullable: true),
+                    Password = table.Column<string>(nullable: true),
                     PhoneNumber = table.Column<string>(nullable: true),
-                    CardNumber = table.Column<string>(nullable: true),
-                    DebtSize = table.Column<decimal>(nullable: false),
-                    ImageUrl = table.Column<string>(nullable: true),
-                    DebtRef = table.Column<string>(nullable: true)
+                    Email = table.Column<string>(nullable: true),
+                    ImageUrl = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserDebtors", x => x.Id);
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PartyLocations",
+                columns: table => new
+                {
+                    Id = table.Column<long>(nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    PartyId = table.Column<long>(nullable: false),
+                    LocationId = table.Column<long>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PartyLocations", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_PartyLocations_Locations_LocationId",
+                        column: x => x.LocationId,
+                        principalTable: "Locations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_PartyLocations_Parties_PartyId",
+                        column: x => x.PartyId,
+                        principalTable: "Parties",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -52,11 +93,11 @@ namespace SystemArchitecture.Database.Migrations
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    PartyId = table.Column<long>(nullable: true),
                     Title = table.Column<string>(nullable: true),
                     Price = table.Column<decimal>(nullable: false),
                     ImageUrl = table.Column<string>(nullable: true),
-                    CheckUrl = table.Column<string>(nullable: true),
-                    PartyId = table.Column<long>(nullable: true)
+                    CheckUrl = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -70,41 +111,24 @@ namespace SystemArchitecture.Database.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Users",
+                name: "Cards",
                 columns: table => new
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    Name = table.Column<string>(nullable: true),
-                    Password = table.Column<string>(nullable: true),
-                    PhoneNumber = table.Column<string>(nullable: true),
-                    CardNumber = table.Column<string>(nullable: true),
-                    ImageUrl = table.Column<string>(nullable: true),
-                    PartyId = table.Column<long>(nullable: true),
-                    PurchaseId = table.Column<long>(nullable: true),
-                    PurchaseId1 = table.Column<long>(nullable: true)
+                    Number = table.Column<string>(nullable: false),
+                    ValidationDeadline = table.Column<DateTime>(nullable: false),
+                    CardHolderId = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Users", x => x.Id);
+                    table.PrimaryKey("PK_Cards", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Users_Parties_PartyId",
-                        column: x => x.PartyId,
-                        principalTable: "Parties",
+                        name: "FK_Cards_Users_CardHolderId",
+                        column: x => x.CardHolderId,
+                        principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Users_Purchases_PurchaseId",
-                        column: x => x.PurchaseId,
-                        principalTable: "Purchases",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
-                    table.ForeignKey(
-                        name: "FK_Users_Purchases_PurchaseId1",
-                        column: x => x.PurchaseId1,
-                        principalTable: "Purchases",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -113,12 +137,11 @@ namespace SystemArchitecture.Database.Migrations
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    DebtSize = table.Column<decimal>(nullable: false),
-                    Ref = table.Column<string>(nullable: true),
                     DebtorId = table.Column<long>(nullable: true),
                     CreditorId = table.Column<long>(nullable: true),
                     DebtorApproval = table.Column<bool>(nullable: false),
-                    CreditorApproval = table.Column<bool>(nullable: false)
+                    CreditorApproval = table.Column<bool>(nullable: false),
+                    DebtSize = table.Column<decimal>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -143,8 +166,8 @@ namespace SystemArchitecture.Database.Migrations
                 {
                     Id = table.Column<long>(nullable: false)
                         .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
-                    PartyId = table.Column<long>(nullable: true),
-                    UserId = table.Column<long>(nullable: true)
+                    PartyId = table.Column<long>(nullable: false),
+                    UserId = table.Column<long>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -154,14 +177,19 @@ namespace SystemArchitecture.Database.Migrations
                         column: x => x.PartyId,
                         principalTable: "Parties",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_PartyUsers_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Cards_CardHolderId",
+                table: "Cards",
+                column: "CardHolderId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Debts_CreditorId",
@@ -172,6 +200,16 @@ namespace SystemArchitecture.Database.Migrations
                 name: "IX_Debts_DebtorId",
                 table: "Debts",
                 column: "DebtorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PartyLocations_LocationId",
+                table: "PartyLocations",
+                column: "LocationId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PartyLocations_PartyId",
+                table: "PartyLocations",
+                column: "PartyId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_PartyUsers_PartyId",
@@ -187,40 +225,30 @@ namespace SystemArchitecture.Database.Migrations
                 name: "IX_Purchases_PartyId",
                 table: "Purchases",
                 column: "PartyId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Users_PartyId",
-                table: "Users",
-                column: "PartyId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Users_PurchaseId",
-                table: "Users",
-                column: "PurchaseId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Users_PurchaseId1",
-                table: "Users",
-                column: "PurchaseId1",
-                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Cards");
+
+            migrationBuilder.DropTable(
                 name: "Debts");
+
+            migrationBuilder.DropTable(
+                name: "PartyLocations");
 
             migrationBuilder.DropTable(
                 name: "PartyUsers");
 
             migrationBuilder.DropTable(
-                name: "UserDebtors");
+                name: "Purchases");
+
+            migrationBuilder.DropTable(
+                name: "Locations");
 
             migrationBuilder.DropTable(
                 name: "Users");
-
-            migrationBuilder.DropTable(
-                name: "Purchases");
 
             migrationBuilder.DropTable(
                 name: "Parties");

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.ComponentModel.DataAnnotations.Schema;
 using SystemArchitecture.Models.Entities.Base;
 
 namespace SystemArchitecture.Models.Entities
@@ -9,6 +8,11 @@ namespace SystemArchitecture.Models.Entities
 	/// </summary>
 	public class Purchase : HaveId
 	{
+		/// <summary>
+		/// Мероприятие.
+		/// </summary>
+		public virtual Party Party { get; set; }
+		
 		/// <summary>
 		/// Наименование товара/услуги
 		/// </summary>
@@ -20,11 +24,6 @@ namespace SystemArchitecture.Models.Entities
 		public decimal Price { get; set; }
 
 		/// <summary>
-		/// Покупатель
-		/// </summary>
-		public User Creditor { get; set; }
-
-		/// <summary>
 		/// Фотография товара/услуги
 		/// </summary>
 		public Uri ImageUrl { get; set; }
@@ -33,9 +32,5 @@ namespace SystemArchitecture.Models.Entities
 		/// Фотография чека
 		/// </summary>
 		public Uri CheckUrl { get; set; }
-
-		// ссылка на мероприятие расположена в классе Party.
-
-		[ForeignKey("PurchaseId")] public User[] UserList { get; set; }
 	}
 }

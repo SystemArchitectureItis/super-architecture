@@ -1,32 +1,32 @@
 ﻿using System.Threading.Tasks;
 using SystemArchitecture.Core;
-using SystemArchitecture.Models;
 using SystemArchitecture.Models.Entities;
+using SystemArchitecture.Web.Controllers.Base;
+using SystemArchitecture.Web.Filters;
 using Microsoft.AspNetCore.Mvc;
 
 namespace SystemArchitecture.Web.Controllers
 {
+	[PrettyFilter]
 	public class UserController : BaseController<User>
 	{
-		private readonly PasswordService _passwordService;
+		private readonly UserService _service;
 
-		public UserController(DomainService<User> service, PasswordService passwordService) : base(service)
+		public UserController(UserService service) : base(service)
 		{
-			_passwordService = passwordService;
+			_service = service;
 		}
 
-		public override Task<IActionResult> Save(User entity)
+		public override async Task<IActionResult> Save([FromBody] User entity)
 		{
-			if (!string.IsNullOrWhiteSpace(entity.Password))
-				entity.Password = _passwordService.HashPassword(entity.Password);
-			return base.Save(entity);
+			await _service.SaveAsync(entity);
+			return Successful();
 		}
 
-		public override Task<IActionResult> Update(User entity)
+		public override async Task<IActionResult> Update([FromBody] User entity)
 		{
-			if (!string.IsNullOrWhiteSpace(entity.Password))
-				entity.Password = _passwordService.HashPassword(entity.Password);
-			return base.Update(entity);
+			await _service.UpdateAsync(entity);
+			return Successful();
 		}
 	}
 }

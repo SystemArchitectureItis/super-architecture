@@ -1,14 +1,12 @@
 using System;
 using System.IO;
 using System.Reflection;
-using SystemArchitecture.Database;
-using SystemArchitecture.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerUI;
 
@@ -27,18 +25,10 @@ namespace SystemArchitecture.Web
 		{
 			services.AddControllersWithViews();
 
+			services.SetConnectionString();
 			services.RegisterContext();
 			services.RegisterServices();
-
-			services.AddDbContext<ApplicationDbContext>();
-
-			var connString = Environment.GetEnvironmentVariable("CONN_STRING");
-			if (string.IsNullOrEmpty(connString))
-				throw new ArgumentException("Не указана строка подключения.");
-			ConnectionStrings.Current = connString;
-			
-			// применить миграции
-			new ApplicationDbContext().Database.Migrate();
+			services.RunMigrations();
 			
 			services.AddSwaggerGen(c =>
 			{
@@ -64,11 +54,11 @@ namespace SystemArchitecture.Web
 			{
 				app.UseDeveloperExceptionPage();
 			}
-			else
-			{
-				app.UseExceptionHandler("/Error");
-				app.UseHsts();
-			}
+			// else
+			// {
+			// 	app.UseExceptionHandler("/Error");
+			// 	app.UseHsts();
+			// }
 
 			app.UseHttpsRedirection();
 			app.UseStaticFiles();

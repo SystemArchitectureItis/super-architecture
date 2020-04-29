@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Linq.Expressions;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace SystemArchitecture.Web.Controllers
+namespace SystemArchitecture.Web.Controllers.Base
 {
 	[Route("[action]")]
 	public class SystemController : Controller

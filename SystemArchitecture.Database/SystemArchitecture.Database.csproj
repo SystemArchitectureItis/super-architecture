@@ -14,8 +14,4 @@
       <ProjectReference Include="..\SystemArchitecture.Models\SystemArchitecture.Models.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Migrations" />
-    </ItemGroup>
-
 </Project>

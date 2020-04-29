@@ -10,8 +10,8 @@ using SystemArchitecture.Database;
 namespace SystemArchitecture.Database.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20200421224331_Initial")]
-    partial class Initial
+    [Migration("20200428221420_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,6 +21,52 @@ namespace SystemArchitecture.Database.Migrations
                 .HasAnnotation("ProductVersion", "3.1.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
+            modelBuilder.Entity("SystemArchitecture.Models.Entities.BankCard", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<long>("CardHolderId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("Number")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("ValidationDeadline")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CardHolderId");
+
+                    b.ToTable("Cards");
+                });
+
+            modelBuilder.Entity("SystemArchitecture.Models.Entities.Connectors.PartyLocation", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<long>("LocationId")
+                        .HasColumnType("bigint");
+
+                    b.Property<long>("PartyId")
+                        .HasColumnType("bigint");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LocationId");
+
+                    b.HasIndex("PartyId");
+
+                    b.ToTable("PartyLocations");
+                });
+
             modelBuilder.Entity("SystemArchitecture.Models.Entities.Connectors.PartyUser", b =>
                 {
                     b.Property<long>("Id")
@@ -28,10 +74,10 @@ namespace SystemArchitecture.Database.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<long?>("PartyId")
+                    b.Property<long>("PartyId")
                         .HasColumnType("bigint");
 
-                    b.Property<long?>("UserId")
+                    b.Property<long>("UserId")
                         .HasColumnType("bigint");
 
                     b.HasKey("Id");
@@ -65,9 +111,6 @@ namespace SystemArchitecture.Database.Migrations
                     b.Property<long?>("DebtorId")
                         .HasColumnType("bigint");
 
-                    b.Property<string>("Ref")
-                        .HasColumnType("text");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CreditorId");
@@ -75,6 +118,33 @@ namespace SystemArchitecture.Database.Migrations
                     b.HasIndex("DebtorId");
 
                     b.ToTable("Debts");
+                });
+
+            modelBuilder.Entity("SystemArchitecture.Models.Entities.Location", b =>
+                {
+                    b.Property<long>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bigint")
+                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+
+                    b.Property<string>("Address")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CloseHour")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Link")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("OpenHour")
+                        .HasColumnType("timestamp without time zone");
+
+                    b.Property<string>("Phone")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Locations");
                 });
 
             modelBuilder.Entity("SystemArchitecture.Models.Entities.Party", b =>
@@ -96,13 +166,7 @@ namespace SystemArchitecture.Database.Migrations
                     b.Property<string>("ImageUrl")
                         .HasColumnType("text");
 
-                    b.Property<string>("Location")
-                        .HasColumnType("text");
-
                     b.Property<string>("Password")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Ref")
                         .HasColumnType("text");
 
                     b.Property<string>("Title")
@@ -149,17 +213,17 @@ namespace SystemArchitecture.Database.Migrations
                         .HasColumnType("bigint")
                         .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
 
-                    b.Property<string>("CardNumber")
+                    b.Property<string>("Email")
+                        .HasColumnType("text");
+
+                    b.Property<string>("FirstName")
                         .HasColumnType("text");
 
                     b.Property<string>("ImageUrl")
                         .HasColumnType("text");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("LastName")
                         .HasColumnType("text");
-
-                    b.Property<long?>("PartyId")
-                        .HasColumnType("bigint");
 
                     b.Property<string>("Password")
                         .HasColumnType("text");
@@ -167,63 +231,48 @@ namespace SystemArchitecture.Database.Migrations
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("text");
 
-                    b.Property<long?>("PurchaseId")
-                        .HasColumnType("bigint");
-
-                    b.Property<long?>("PurchaseId1")
-                        .HasColumnType("bigint");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("PartyId");
-
-                    b.HasIndex("PurchaseId");
-
-                    b.HasIndex("PurchaseId1")
-                        .IsUnique();
 
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("SystemArchitecture.Models.Entities.UserDebtor", b =>
+            modelBuilder.Entity("SystemArchitecture.Models.Entities.BankCard", b =>
                 {
-                    b.Property<long>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("bigint")
-                        .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn);
+                    b.HasOne("SystemArchitecture.Models.Entities.User", "CardHolder")
+                        .WithMany()
+                        .HasForeignKey("CardHolderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
 
-                    b.Property<string>("CardNumber")
-                        .HasColumnType("text");
+            modelBuilder.Entity("SystemArchitecture.Models.Entities.Connectors.PartyLocation", b =>
+                {
+                    b.HasOne("SystemArchitecture.Models.Entities.Location", "Location")
+                        .WithMany("PartyLocations")
+                        .HasForeignKey("LocationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Property<string>("DebtRef")
-                        .HasColumnType("text");
-
-                    b.Property<decimal>("DebtSize")
-                        .HasColumnType("numeric");
-
-                    b.Property<string>("ImageUrl")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.Property<string>("PhoneNumber")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("UserDebtors");
+                    b.HasOne("SystemArchitecture.Models.Entities.Party", "Party")
+                        .WithMany("PartyLocations")
+                        .HasForeignKey("PartyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("SystemArchitecture.Models.Entities.Connectors.PartyUser", b =>
                 {
                     b.HasOne("SystemArchitecture.Models.Entities.Party", "Party")
-                        .WithMany()
-                        .HasForeignKey("PartyId");
+                        .WithMany("PartyUsers")
+                        .HasForeignKey("PartyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("SystemArchitecture.Models.Entities.User", "User")
                         .WithMany()
-                        .HasForeignKey("UserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("SystemArchitecture.Models.Entities.Debt", b =>
@@ -239,24 +288,9 @@ namespace SystemArchitecture.Database.Migrations
 
             modelBuilder.Entity("SystemArchitecture.Models.Entities.Purchase", b =>
                 {
-                    b.HasOne("SystemArchitecture.Models.Entities.Party", null)
-                        .WithMany("PurchaseList")
+                    b.HasOne("SystemArchitecture.Models.Entities.Party", "Party")
+                        .WithMany()
                         .HasForeignKey("PartyId");
-                });
-
-            modelBuilder.Entity("SystemArchitecture.Models.Entities.User", b =>
-                {
-                    b.HasOne("SystemArchitecture.Models.Entities.Party", null)
-                        .WithMany("Users")
-                        .HasForeignKey("PartyId");
-
-                    b.HasOne("SystemArchitecture.Models.Entities.Purchase", null)
-                        .WithMany("UserList")
-                        .HasForeignKey("PurchaseId");
-
-                    b.HasOne("SystemArchitecture.Models.Entities.Purchase", null)
-                        .WithOne("Creditor")
-                        .HasForeignKey("SystemArchitecture.Models.Entities.User", "PurchaseId1");
                 });
 #pragma warning restore 612, 618
         }

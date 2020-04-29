@@ -1,6 +1,7 @@
 using System;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.Collections.Generic;
 using SystemArchitecture.Models.Entities.Base;
+using SystemArchitecture.Models.Entities.Connectors;
 
 namespace SystemArchitecture.Models.Entities
 {
@@ -9,53 +10,61 @@ namespace SystemArchitecture.Models.Entities
 	/// </summary>
 	public class Party : HaveId
 	{
-		public string Ref { get; set; }
-		
 		/// <summary>
 		/// Наименование
 		/// </summary>
 		public string Title { get; set; }
-		
+
 		/// <summary>
 		/// Описание
 		/// </summary>
 		public string Description { get; set; }
-		
-		/// <summary>
-		/// Место
-		/// </summary>
-		public string Location { get; set; }
-		
+
 		/// <summary>
 		/// Дата начала
 		/// </summary>
 		public DateTime DateStart { get; set; } = DateTime.Now;
-		
+
 		/// <summary>
 		/// Дата конца
 		/// </summary>
 		public DateTime DateEnd { get; set; } = DateTime.Now;
-		
+
 		/// <summary>
 		/// Пароль для входа в мероприятие
 		/// </summary>
 		public string Password { get; set; }
-		
+
 		/// <summary>
 		/// Ссылка на картинку
 		/// </summary>
 		public Uri ImageUrl { get; set; }
 
-		/// <summary>
-		/// Список причастных пользователей
-		/// </summary>
-		[ForeignKey("PartyId")]
-		public User[] Users { get; set; }
-		
-		/// <summary>
-		/// Список покупок
-		/// </summary>
-		[ForeignKey("PartyId")]
-		public Purchase[] PurchaseList { get; set; }
+		// /// <summary>
+		// /// Связки пользователей и мероприятия.
+		// /// </summary>
+		// public virtual List<PartyUser> PartyUsers { get; set; }
+		//
+		// /// <summary>
+		// /// Список пользователей.
+		// /// </summary>
+		// [NotMapped]
+		// public IEnumerable<User> Users => PartyUsers?.Select(x => x.User);
+
+		// /// <summary>
+		// /// Список покупок.
+		// /// </summary>
+		// public virtual List<Purchase> PurchaseList { get; set; }
+
+		// /// <summary>
+		// /// Связка мест и мероприятий.
+		// /// </summary>
+		// public virtual List<PartyLocation> PartyLocations { get; set; }
+		//
+		// /// <summary>
+		// /// Места мероприятия.
+		// /// </summary>
+		// [NotMapped]
+		// public IEnumerable<Location> Locations => PartyLocations?.Select(x => x.Location);
 	}
 }
