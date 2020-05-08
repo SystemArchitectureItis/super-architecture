@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using SystemArchitecture.Core;
+using SystemArchitecture.Core.EntityServices;
 using SystemArchitecture.Models.Entities;
 using SystemArchitecture.Web.Controllers.Base;
 using SystemArchitecture.Web.Filters;

@@ -1,8 +1,9 @@
 ﻿using System.Threading.Tasks;
+using SystemArchitecture.Core.EntityServices.Base;
 using SystemArchitecture.Models;
 using SystemArchitecture.Models.Entities;
 
-namespace SystemArchitecture.Core
+namespace SystemArchitecture.Core.EntityServices
 {
 	public class UserService : BaseDomainService<User>
 	{

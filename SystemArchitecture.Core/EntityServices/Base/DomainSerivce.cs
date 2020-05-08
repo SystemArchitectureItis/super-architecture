@@ -3,7 +3,7 @@ using System.Threading.Tasks;
 using SystemArchitecture.Models;
 using SystemArchitecture.Models.Entities.Base;
 
-namespace SystemArchitecture.Core
+namespace SystemArchitecture.Core.EntityServices.Base
 {
 	public class BaseDomainService<T> where T : HaveId
 	{

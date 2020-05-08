@@ -1,6 +1,8 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
 using SystemArchitecture.Core;
+using SystemArchitecture.Core.EntityServices;
+using SystemArchitecture.Core.EntityServices.Base;
 using SystemArchitecture.Database;
 using SystemArchitecture.Models;
 using Microsoft.EntityFrameworkCore;
@@ -13,8 +15,11 @@ namespace SystemArchitecture.Web
 		public static void RegisterServices(this IServiceCollection services)
 		{
 			services.AddScoped(typeof(BaseDomainService<>));
-			services.AddScoped(typeof(CardService));
-			services.AddScoped(typeof(UserService));
+			services.AddScoped<CardService>();
+			services.AddScoped<UserService>();
+			services.AddScoped<DebtService>();
+			services.AddScoped<PurchaseService>();
+			
 			services.AddScoped<PasswordService>();
 			
 			services.AddScoped<IDataStore, DataStore>();

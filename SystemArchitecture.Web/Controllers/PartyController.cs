@@ -1,4 +1,4 @@
-﻿using SystemArchitecture.Core;
+﻿using SystemArchitecture.Core.EntityServices.Base;
 using SystemArchitecture.Models.Entities;
 using SystemArchitecture.Web.Controllers.Base;
 
